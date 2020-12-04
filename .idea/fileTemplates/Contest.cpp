@@ -1,0 +1,1 @@
+#parse("Contest Template.cpp")

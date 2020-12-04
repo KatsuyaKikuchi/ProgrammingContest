@@ -1,0 +1,14 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/katsuyakikuchi/CLionProjects/ProgrammingContest/AtCoder/AtCoder Library Practice Contest/A.cpp
+bits/stdc++.h
+-
+atcoder/all
+-
+

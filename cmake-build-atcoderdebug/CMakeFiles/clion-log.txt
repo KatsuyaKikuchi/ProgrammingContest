@@ -1,0 +1,4 @@
+"/Users/katsuyakikuchi/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/201.7223.86/CLion.app/Contents/bin/cmake/mac/bin/cmake" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=/usr/local/opt/gcc/bin/g++-8 -G "CodeBlocks - Unix Makefiles" /Users/katsuyakikuchi/CLionProjects/ProgrammingContest
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/katsuyakikuchi/CLionProjects/ProgrammingContest/cmake-build-atcoderdebug

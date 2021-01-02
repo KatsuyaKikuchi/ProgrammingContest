@@ -31,10 +31,9 @@ int main() {
         A[b][a] = true;
     }
     ll p = pow(2LL, N);
-
-
-    vector<vector<ll>> bits(N);
-    FOR(bit, p, 1) {
+    vector<ll> dp(1LL << N, INF);
+    dp[0] = 0;
+    REP(bit, p) {
         vector<ll> v;
         REP(i, N) {
             if ((bit >> i) & 1)
@@ -42,7 +41,7 @@ int main() {
         }
         bool e = true;
         REP(i, v.size()) {
-            REP(j, v.size()) {
+            FOR(j, v.size(), i + 1) {
                 if (!A[v[i]][v[j]]) {
                     e = false;
                     break;
@@ -51,34 +50,17 @@ int main() {
             if (!e)
                 break;
         }
-
         if (e) {
-            bits[0].push_back(bit);
-            if (bit == p - 1) {
-                cout << 1 << endl;
-                return 0;
-            }
+            dp[bit] = 1;
+            continue;
         }
-    }
 
-    FOR(i, N, 1) {
-        REP(j, bits[i - 1].size()) {
-            REP(k, bits[0].size()) {
-                ll a = bits[i - 1][j];
-                ll b = bits[0][k];
-                if ((a & b) > 0)
-                    continue;
-                bits[i].push_back(a | b);
-                ll x = (a | b);
-                if (x == p - 1) {
-                    cout << i + 1 << endl;
-                    return 0;
-                }
-            }
+        for (ll i = bit; i > 0; i = (i - 1) & bit) {
+            ll j = bit & (~i);
+            dp[bit] = std::min(dp[i] + dp[j], dp[bit]);
         }
-        sort(bits[i].begin(), bits[i].end());
-        bits[i].erase(unique(bits[i].begin(), bits[i].end()), bits[i].end());
     }
+    cout << dp[p - 1] << endl;
 
     return 0;
 }

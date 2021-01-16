@@ -15,5 +15,24 @@ const ll INF = (ll) 1e15;
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
+    ll P;
+    cin >> P;
+    ll a = 1, b = 1;
+    ll idx = 3;
+    if (P == 1) {
+        cout << 1 << endl;
+        return 0;
+    }
+    while (idx <= 1000000) {
+        ll t = (a + b) % P;
+        if (t == 0) {
+            cout << idx << endl;
+            return 0;
+        }
+        idx++;
+        a = b;
+        b = t;
+    }
+    cout << -1 << endl;
     return 0;
 }

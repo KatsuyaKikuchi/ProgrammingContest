@@ -15,5 +15,23 @@ const ll INF = (ll) 1e15;
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
+    ll N;
+    cin >> N;
+    map<string, ll> mp;
+    REP(i, N) {
+        ll k;
+        cin >> k;
+        REP(j, k) {
+            string s;
+            cin >> s;
+            mp[s]++;
+        }
+    }
+    ll ans = 0;
+    for (auto t: mp) {
+        if (t.second == N)
+            ans++;
+    }
+    cout << ans << endl;
     return 0;
 }

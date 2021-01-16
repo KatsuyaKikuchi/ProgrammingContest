@@ -15,5 +15,6 @@ const ll INF = (ll) 1e15;
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
+    cout << 2021 << endl;
     return 0;
 }

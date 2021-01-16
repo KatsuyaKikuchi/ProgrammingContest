@@ -15,5 +15,14 @@ const ll INF = (ll) 1e15;
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
+    string X;
+    cin >> X;
+
+    int ans = 0;
+    REP(i, X.length()) {
+        ans = std::max(ans, X[i] - '0');
+    }
+    cout << ans << endl;
+
     return 0;
 }

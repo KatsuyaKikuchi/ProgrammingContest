@@ -11,36 +11,45 @@ typedef pair<ll, ll> pll;
 
 const ll MOD = 1000000007;
 const ll INF = (ll) 1e15;
+const ll MAX = 10;
 
-struct Data {
-    ll a = 0;
-    ll b = 0;
-};
-
-Data A[200005];
-
-Data parse(const string &s) {
-    Data d;
-    d.a = 0;
-    ll n = s.length() - 1;
-    REP(i, s.length()) {
+ll parse(string s) {
+    ll cnt = MAX;
+    REP(i, s.length() - 1) {
         if (s[i] == '.') {
-            n = i;
-            break;
+            cnt--;
+            swap(s[i], s[i + 1]);
         }
-        ll x = s[i] - '0';
-        d.a = d.a * 10LL + x;
+        if (cnt == 0)
+            break;
     }
-    d.b = 0;
-    FOR(i, s.length(), n + 1) {
-        d.b = d.b * 10LL + s[i] - '0';
+    ll ret = 0;
+    REP(i, s.length()) {
+        if (s[i] == '.')
+            break;
+        ret = ret * 10LL + s[i] - '0';
     }
+    if (cnt < MAX) {
+        for (ll i = s.length() - 1; i >= 0; --i) {
+            if (s[i] == '.')
+                break;
+            if (s[i] != '0')
+                return 0;
+        }
+    }
+    while (cnt-- > 0) {
+        ret *= 10LL;
+    }
+    return ret;
+}
 
-    while (d.b > 0 && d.b % 10 == 0) {
-        d.b /= 10;
-    }
-
-    return d;
+ll gcd(ll a, ll b) {
+    if (a < b)
+        swap(a, b);
+    ll c = a % b;
+    if (c == 0)
+        return b;
+    return gcd(b, c);
 }
 
 int main() {
@@ -48,14 +57,37 @@ int main() {
     ios::sync_with_stdio(false);
     ll N;
     cin >> N;
+    vector<ll> v;
     REP(i, N) {
         string s;
         cin >> s;
-        A[i] = parse(s);
+        ll n = parse(s);
+        if (n > 0)
+            v.push_back(n);
     }
+    vector<vector<ll>> S(MAX * 2 + 1, vector<ll>(MAX * 2 + 1, 0));
+    ll ans = 0;
+    REP(i, v.size()) {
+        ll a = 0, b = 0;
+        ll x = v[i];
+        while (x % 2 == 0) {
+            a++;
+            x /= 2;
+        }
+        while (x % 5 == 0) {
+            b++;
+            x /= 5;
+        }
+        a = std::min(a, MAX * 2);
+        b = std::min(b, MAX * 2);
+        ans += S[MAX * 2 - a][MAX * 2 - b];
+        for (ll j = a; j >= 0; --j) {
+            for (ll k = b; k >= 0; --k) {
+                S[j][k]++;
+            }
+        }
+    }
+    cout << ans << endl;
 
-    REP(i, N) {
-        cout << A[i].a << "," << A[i].b << endl;
-    }
     return 0;
 }

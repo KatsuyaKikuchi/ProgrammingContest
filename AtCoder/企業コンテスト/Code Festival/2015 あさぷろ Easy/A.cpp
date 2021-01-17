@@ -12,25 +12,19 @@ typedef pair<ll, ll> pll;
 const ll MOD = 1000000007;
 const ll INF = (ll) 1e15;
 
-ll modpow(ll n, ll r, ll mod) {
-    ll ret = 1;
-    ll p = n % mod;
-    while (r > 0) {
-        if (r & 1)
-            ret = (ret * p) % mod;
-        p = (p * p) % mod;
-        r >>= 1LL;
-    }
-    return ret;
-}
-
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-    ll N, M;
-    cin >> N >> M;
-    ll ans = modpow(10, N, M * M) / M;
-    cout << ans << endl;
-
+    ll N;
+    cin >> N;
+    ll n = 1;
+    while (true) {
+        ll p = n * n;
+        if (p >= N) {
+            cout << p - N << endl;
+            break;
+        }
+        n++;
+    }
     return 0;
 }

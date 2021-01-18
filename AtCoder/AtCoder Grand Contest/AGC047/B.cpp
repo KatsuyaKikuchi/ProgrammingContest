@@ -12,75 +12,46 @@ typedef pair<ll, ll> pll;
 const ll mod[] = {999999937LL, 1000000007LL}, base = 9973;
 const ll INF = (ll) 1e15;
 
-std::map<pll, ll> M[27][27];
-ll X[27];
-bool U[27];
+unordered_map<ll, int> mp[26];
 
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-
     ll N;
     cin >> N;
-    vector<string> v(N);
+    vector<string> S(N);
+    vector<bool> len(1000000, false);
     REP(i, N) {
-        cin >> v[i];
+        cin >> S[i];
     }
-
+    sort(S.begin(), S.end(), [](string &a, string &b) { return a.length() < b.length(); });
     ll ans = 0;
-    sort(v.begin(), v.end(), [](string a, string b) { return a.length() > b.length(); });
-    REP(i, v.size()) {
-        if (v[i].size() == 1)
-            break;
-        ll a = v[i][0] - 'a';
-        ll b = v[i][1] - 'a';
-        pll h(0, 0);
-        for (ll j = v[i].size() - 1; j >= 2; --j) {
-            ll x = v[i][j] - 'a' + 1;
-            h.first = (h.first * base + x) % mod[0];
-            h.second = (h.second * base + x) % mod[1];
+    REP(i, N) {
+        vector<ll> num(26, 0);
+        REP(j, S[i].length()) {
+            num[S[i][j] - 'a']++;
         }
-        ans += M[a][b][h];
-        memset(X, 0, sizeof(X));
-        pll hsh(0, 0);
-        REP(j, v[i].size()) {
-            X[v[i][j] - 'a']++;
-        }
-        for (ll j = v[i].length() - 1; j >= 0; --j) {
-            ll t = v[i][j] - 'a';
-            X[t]--;
-            REP(x, 26) {
-                if (X[x] == 0)
-                    continue;
-                M[x][t][hsh]++;
+        pll hash(0, 0);
+        pll b(1, 1);
+        for (ll j = S[i].length() - 1; j >= 0; --j) {
+            if (len[S[i].length() - 1 - j]) {
+                ll h = hash.first * hash.second;
+                REP(k, 26) {
+                    if (num[k] > 0)
+                        ans += mp[k][h];
+                }
             }
-            hsh.first = (hsh.first * base + t + 1) % mod[0];
-            hsh.second = (hsh.second * base + t + 1) % mod[1];
+            if (j > 0) {
+                hash.first = (hash.first + (S[i][j] - 'a' + 1) * b.first) % mod[0];
+                hash.second = (hash.second + (S[i][j] - 'a' + 1) * b.second) % mod[1];
+                b.first = (b.first * base) % mod[0];
+                b.second = (b.second * base) % mod[1];
+                num[S[i][j] - 'a']--;
+            }
         }
+        mp[S[i][0] - 'a'][hash.first * hash.second]++;
+        len[S[i].length() - 1] = true;
     }
-
-    memset(X, 0, sizeof(X));
-    REP(i, v.size()) {
-        if (v[i].size() == 1)
-            break;
-        memset(U, 0, sizeof(U));
-        REP(j, v[i].size()) {
-            ll t = v[i][j] - 'a';
-            if (U[t])
-                continue;
-            U[t] = true;
-            X[t]++;
-        }
-    }
-    REP(i, v.size()) {
-        if (v[i].size() > 1)
-            continue;
-        ll t = v[i][0] - 'a';
-        ans += X[t];
-        X[t]++;
-    }
-
     cout << ans << endl;
-
     return 0;
 }

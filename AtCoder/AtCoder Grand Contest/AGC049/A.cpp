@@ -31,5 +31,29 @@ int main() {
                 V[i].egde.push_back(j);
         }
     }
+    vector<ll> S(N, 0);
+    REP(i, N) {
+        vector<ll> seen(N, false);
+        queue<ll> q;
+        q.push(i);
+        seen[i] = true;
+        while (!q.empty()) {
+            ll t = q.front();
+            q.pop();
+            S[t]++;
+            REP(j, V[t].egde.size()) {
+                ll nxt = V[t].egde[j];
+                if (seen[nxt])
+                    continue;
+                seen[nxt] = true;
+                q.push(nxt);
+            }
+        }
+    }
+    double ans = 0;
+    REP(i, N) {
+        ans += 1.0 / S[i];
+    }
+    cout << OF64 << ans << endl;
     return 0;
 }

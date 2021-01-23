@@ -12,12 +12,10 @@ typedef pair<ll, ll> pll;
 const ll MOD = 1000000007;
 const ll INF = (ll) 1e15;
 
-ll N;
-ll A[10004];
-
 struct UnionFind {
     UnionFind(int n) {
         rank.assign(n, 0);
+        count.assign(n, 1);
         parent.resize(n);
         for (int i = 0; i < n; ++i) {
             parent[i] = i;
@@ -34,6 +32,11 @@ struct UnionFind {
         return find(x) == find(y);
     }
 
+    int size(int x) {
+        x = find(x);
+        return count[x];
+    }
+
     void unit(int x, int y) {
         x = find(x);
         y = find(y);
@@ -42,9 +45,11 @@ struct UnionFind {
 
         if (rank[x] < rank[y]) {
             parent[x] = y;
+            count[y] += count[x];
         }
         else {
             parent[y] = x;
+            count[x] += count[y];
             if (rank[x] == rank[y])
                 rank[x]++;
         }
@@ -52,9 +57,11 @@ struct UnionFind {
 
     vector<int> rank;
     vector<int> parent;
+    vector<int> count;
 };
 
-ll C[100005];
+ll N;
+ll A[10004];
 ll L[100005];
 bool U[100005];
 
@@ -62,13 +69,14 @@ int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
     cin >> N;
+    ll mx = 0;
     REP(i, N) {
         cin >> A[i];
+        mx = std::max(A[i], mx);
     }
     priority_queue<pll, vector<pll>, function<bool(pll, pll)>> q([](pll a, pll b) { return a.first < b.first; });
     REP(i, N) {
         q.push(pll(A[i], i));
-        C[i] = 1;
     }
 
     memset(L, 0, sizeof(L));
@@ -83,31 +91,27 @@ int main() {
         if (idx > 0) {
             if (U[idx - 1]) {
                 ll p = uf.find(idx - 1);
-                sum += C[p];
+                sum += uf.size(idx - 1);
                 uf.unit(idx, idx - 1);
             }
         }
         if (idx < N - 1) {
             if (U[idx + 1]) {
                 ll p = uf.find(idx + 1);
-                sum += C[p];
+                sum += uf.size(idx + 1);
                 uf.unit(idx, idx + 1);
             }
         }
-        {
-            ll p = uf.find(idx);
-            C[p] = sum;
-            L[n] = std::max(L[n], sum);
-        }
+        L[n] = std::max(L[n], sum);
         U[idx] = true;
     }
 
-    for (ll i = 100002; i >= 0; --i) {
+    for (ll i = mx; i >= 0; --i) {
         L[i] = std::max(L[i], L[i + 1]);
     }
 
     ll ans = 0;
-    REP(i, 100003) {
+    REP(i, mx + 1) {
         ans = std::max(ans, L[i] * i);
     }
     cout << ans << endl;

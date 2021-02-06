@@ -13,6 +13,8 @@ const ll MOD = 1000000007;
 const ll INF = (ll) 1e15;
 
 string S[15];
+ll x[4] = {0, 0, 1, 1};
+ll y[4] = {0, 1, 0, 1};
 
 int main() {
     cin.tie(0);
@@ -23,152 +25,20 @@ int main() {
         cin >> S[i];
     }
     ll ans = 0;
-    FOR(j, W - 1, 1) {
-        {
-            ll n = 0;
-            REP(i, H) {
-                if (S[i][j] == '#') {
-                    if (S[i][j - 1] == '.') {
-                        n = 1;
-                    }
-                    else {
-                        ans += n;
-                        n = 0;
-                    }
-                }
-                else if (S[i][j] == '.') {
-                    ans += n;
-                    n = 0;
-                }
-            }
-        }
-        {
-            ll n = 0;
-            REP(i, H) {
-                if (S[i][j] == '#') {
-                    if (S[i][j + 1] == '.') {
-                        n = 1;
-                    }
-                    else {
-                        ans += n;
-                        n = 0;
-                    }
-                }
-                else if (S[i][j] == '.') {
-                    ans += n;
-                    n = 0;
-                }
-            }
-        }
-    }
-    FOR(i, H - 1, 1) {
-        {
-            ll n = 0;
-            REP(j, W) {
-                if (S[i][j] == '#') {
-                    if (S[i + 1][j] == '.') {
-                        n = 1;
-                    }
-                    else {
-                        ans += n;
-                        n = 0;
-                    }
-                }
-                else {
-                    ans += n;
-                    n = 0;
-                }
-            }
-        }
-        {
-            ll n = 0;
-            REP(j, W) {
-                if (S[i][j] == '#') {
-                    if (S[i - 1][j] == '.') {
-                        n = 1;
-                    }
-                    else {
-                        ans += n;
-                        n = 0;
-                    }
-                }
-                else {
-                    ans += n;
-                    n = 0;
-                }
-            }
-        }
-    }
-#if false
-    {
-        ll p = -1;
+    REP(i, H) {
         REP(j, W) {
-            ll h = -1;
-            REP(i, H) {
-                if (S[i][j] == '#') {
-                    h = i;
-                    break;
-                }
+            ll n = 0;
+            REP(k, 4) {
+                ll h = i + x[k], w = j + y[k];
+                if (h >= H || w >= W)
+                    continue;
+                if (S[h][w] == '#')
+                    n++;
             }
-            if (h < 0)
-                continue;
-            if (p != h)
+            if (n % 2 == 1)
                 ans++;
-            p = h;
         }
     }
-    {
-        ll p = -1;
-        REP(j, W) {
-            ll h = -1;
-            for (ll i = H - 1; i >= 0; --i) {
-                if (S[i][j] == '#') {
-                    h = i;
-                    break;
-                }
-            }
-            if (h < 0)
-                continue;
-            if (p != h)
-                ans++;
-            p = h;
-        }
-    }
-    {
-        ll p = -1;
-        REP(i, H) {
-            ll w = -1;
-            REP(j, W) {
-                if (S[i][j] == '#') {
-                    w = j;
-                    break;
-                }
-            }
-            if (w < 0)
-                continue;
-            if (p != w)
-                ans++;
-            p = w;
-        }
-    }
-    {
-        ll p = -1;
-        REP(i, H) {
-            ll w = -1;
-            for (ll j = W - 1; j >= 0; --j) {
-                if (S[i][j] == '#') {
-                    w = j;
-                    break;
-                }
-            }
-            if (w < 0)
-                continue;
-            if (p != w)
-                ans++;
-            p = w;
-        }
-    }
-#endif
     cout << ans << endl;
     return 0;
 }

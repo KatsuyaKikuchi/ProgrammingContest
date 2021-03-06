@@ -1,92 +1,84 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
 
-using namespace std;
+using u64 = uint64_t;
 
-typedef long long int ll;
-typedef pair<ll, ll> pll;
+template<typename T>
+std::vector<T> divisor(T n) {
+    std::vector<T> res1;
+    std::vector<T> res2;
 
-#define FOR(i, n, m) for(ll (i)=(m);(i)<(n);++(i))
-#define REP(i, n) FOR(i,n,0)
-#define OF64 std::setprecision(10)
+    for (T i = 1; i * i <= n; i++) {
+        if (n % i == 0) {
+            res1.push_back(i);
+            if (i != n / i) {
+                res2.push_back(n / i);
+            }
 
-const ll MOD = 1000000007;
-const ll INF = (ll) 1e15;
-
-template<std::uint_fast64_t Modulus>
-class ModInt {
-    using u64 = std::uint_fast64_t;
-public:
-    constexpr ModInt(u64 value = 0) noexcept:
-            mValue(value % Modulus) {}
-
-    u64 &value() { return mValue; }
-
-    constexpr ModInt &operator+=(ModInt v) noexcept {
-        mValue += v.mValue;
-        if (mValue >= Modulus)
-            mValue -= Modulus;
-        return *this;
-    }
-
-    constexpr ModInt &operator-=(ModInt v) noexcept {
-        if (mValue < v.mValue)
-            mValue += Modulus;
-        mValue -= v.mValue;
-        return *this;
-    }
-
-    constexpr ModInt &operator*=(ModInt v) noexcept {
-        mValue = (mValue * v.mValue) % Modulus;
-        return *this;
-    }
-
-    constexpr ModInt &operator/=(ModInt v) noexcept {
-        *this *= v.pow(Modulus - 2);
-        return *this;
-    }
-
-    constexpr ModInt operator+(ModInt v) noexcept {
-        return ModInt(*this) += v;
-    }
-
-    constexpr ModInt operator-(ModInt v) noexcept {
-        return ModInt(*this) -= v;
-    }
-
-    constexpr ModInt operator*(ModInt v) noexcept {
-        return ModInt(*this) *= v;
-    }
-
-    constexpr ModInt operator/(ModInt v) noexcept {
-        return ModInt(*this) /= v;
-    }
-
-    ModInt pow(u64 r) {
-        u64 p = mValue;
-        ModInt ret(1);
-        while (r > 0) {
-            if (r & 1)
-                ret *= p;
-            r >>= 1;
-            p = (p * p) % Modulus;
         }
-        return ret;
     }
+    for (u64 i = res2.size(); i > 0; --i) {
+        res1.push_back(res2[i - 1]);
+    }
+    return res1;
+}
 
-private:
-    u64 mValue;
-};
+//*
+u64 mul(u64 a, u64 b) { // a*b mod 2^61-1
+    const u64 m30 = (1ull << 30) - 1;
+    const u64 m31 = (1ull << 31) - 1;
+    u64 au = a >> 31;
+    u64 ad = a & m31;
+    u64 bu = b >> 31;
+    u64 bd = b & m31;
+    u64 mid = ad * bu + au * bd;
+    u64 midu = mid >> 30;
+    u64 midd = mid & m30;
+    u64 res = au * bu * 2 + midu + (midd << 31) + ad * bd;
+    return res;
+}
+
+/*/
+//*
+constexpr u64 p = 998244353;
+
+u64 mul(u64 a, u64 b) {
+	return ((a % p) * (b % p)) % p;
+}
+//*/
+u64 powmod(u64 base, u64 exp) { // base^exp mod MOD
+    if (exp == 0) {
+        return 1;
+    }
+    else if (exp % 2 == 0) {
+        u64 t = powmod(base, exp / 2);
+        return mul(t, t);
+    }
+    else {
+        return mul(base, powmod(base, exp - 1));
+    }
+}
 
 int main() {
-    using mint = ModInt<MOD>;
-    cin.tie(0);
-    ios::sync_with_stdio(false);
-
-    mint a = 2;
-    mint b = 3;
-    cout << (a / b).value() << endl;
-
-    mint c = a / b;
-    cout << (c * 3).value() << endl;
+    constexpr u64 p = (1ull << 61) - 1;
+    auto div = divisor(p - 1);
+    u64 primitiveRoot = 0;
+    for (u64 i = 1; i < p; i++) {
+        bool isPrimitiveRoot = true;
+        for (auto &&v : div) {
+            auto r = powmod(i, v);
+            if (r == 1 && v != p - 1) {
+                isPrimitiveRoot = false;
+                break;
+            }
+        }
+        if (isPrimitiveRoot) {
+            std::cout << i << std::endl;
+            //primitiveRoot = i;
+            isPrimitiveRoot = false;
+            // break;
+        }
+    }
+    std::cout << primitiveRoot << std::endl;
     return 0;
 }

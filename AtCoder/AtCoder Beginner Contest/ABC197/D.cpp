@@ -20,17 +20,12 @@ int main() {
     pll a, b;
     cin >> a.first >> a.second;
     cin >> b.first >> b.second;
-    double theta = 360.0 / N;
     double dx = (b.first - a.first) * 0.5, dy = (b.second - a.second) * 0.5;
     double cx = a.first + dx, cy = a.second + dy;
-    double pi = (theta / 180.0) * M_PI;
-    double cs = cos(pi);
-    double sn = sin(pi);
-   // cout << cx << " " << cy << endl;
-    dx *= -1;
-    dy *= -1;
-    double ndx = cs * dx - sn * dy;
-    double ndy = sn * dx + cs * dy;
-    cout << OF64 << cx + ndx << " " << cy + ndy << endl;
+    complex<double> dir(-dx, -dy);
+    double pi = ((360.0 / N) / 180.0) * M_PI;
+    complex<double> rot(cos(pi), sin(pi));
+    auto dir2 = dir * rot;
+    cout << OF64 << cx + dir2.real() << " " << cy + dir2.imag() << endl;
     return 0;
 }

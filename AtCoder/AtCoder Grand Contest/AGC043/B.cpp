@@ -12,85 +12,60 @@ typedef pair<ll, ll> pll;
 const ll MOD = 1000000007;
 const ll INF = (ll) 1e15;
 
-ll A[1000006];
-
-struct TestCase {
-    TestCase() {
-        std::random_device rnd;
-        mMt = std::mt19937(rnd());
-    }
-
-    int get(int low, int height) {
-        if (low > height)
-            swap(low, height);
-        int d = height - low;
-        if (d == 0)
-            return low;
-        std::uniform_int_distribution<> rand(0, d);
-        return low + rand(mMt);
-    }
-
-    std::mt19937 mMt;
-};
+ll P[1000010];
 
 ll solve(string &S) {
     ll N = S.length();
     vector<ll> v(N);
+    vector<ll> cnt(3, 0);
     REP(i, N) {
-        v[i] = S[i] - '0';
+        v[i] = S[i] - '1';
+        cnt[v[i]]++;
+    }
+
+    P[0] = 0;
+    REP(i, N + 1) {
+        P[i + 1] = P[i];
+        ll x = i + 1;
+        while (x % 2 == 0) {
+            P[i + 1]++;
+            x /= 2;
+        }
+    }
+    if (cnt[1] == 0 && cnt[0] > 0 && cnt[2] > 0) {
+        ll ret = 0;
+        REP(i, N) {
+            if (v[i] == 0)
+                continue;
+            ll a = P[N - 1];
+            ll b = P[i] + P[N - 1 - i];
+            if (a != b)
+                continue;
+            ret ^= 1;
+        }
+        return ret * 2;
     }
 
     ll ans = 0;
-    ll m = INF;
-    bool use = false;
-    REP(i, N - 1) {
-        vector<ll> t(N - i - 1);
-        ll z = 0;
-        ll max = 0;
-        REP(j, N - i - 1) {
-            t[j] = abs(v[j] - v[j + 1]);
-            max = std::max(t[j], max);
-            if (t[j] == 0)
-                z++;
-        }
-        if (z >= t.size() - 1 && !use) {
-            ans = max;
-            use = true;
-            m = std::min(m, i);
-        }
-        v.swap(t);
+    REP(i, N) {
+        if (v[i] % 2 == 0)
+            continue;
+        ll a = P[N - 1];
+        ll b = P[i] + P[N - 1 - i];
+        if (a != b)
+            continue;
+        ans ^= 1;
     }
-
-    cout << m << endl;
-    cout << endl;
-    if (ans != v[0]) {
-        return -1;
-    }
-    return v[0];
+    return ans % 2;
 }
 
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-    TestCase test;
-    while (true) {
-        ll N = test.get(10, 10);
-        string S = "";
-        REP(i, N) {
-            S.push_back((char) (test.get(1, 3) + '0'));
-        }
-
-        ll n = solve(S);
-        if (n < 0) {
-            cout << "error" << endl;
-            cout << S << endl;
-            break;
-        }
-        //if (n == 1)
-        {
-            //cout << n << ":" << S << endl;
-            //break;
-        }
-    }
+    ll N;
+    cin >> N;
+    string S;
+    cin >> S;
+    cout << solve(S) << endl;
     return 0;
 }
